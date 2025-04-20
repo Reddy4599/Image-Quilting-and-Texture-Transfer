@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texture Transfer</title>
+    <link rel="stylesheet" href="css/texture-transfer.css">
+</head>
+<body>
+    <header>
+        <h1>Texture Transfer</h1>
+        <button id="backBtn">Back to Dashboard</button>
+    </header>
+    
+    <div class="container">
+        <div class="upload-section">
+            <div class="upload-box" id="textureUpload">
+                <h3>Upload Texture Image</h3>
+                <input type="file" id="textureImage" accept="image/*">
+                <div class="preview" id="texturePreview"></div>
+            </div>
+            
+            <div class="upload-box" id="targetUpload">
+                <h3>Upload Target Image</h3>
+                <input type="file" id="targetImage" accept="image/*">
+                <div class="preview" id="targetPreview"></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="param-control">
+                <label for="patchSize">Patch Size:</label>
+                <input type="range" id="patchSize" min="10" max="100" value="30">
+                <span id="patchSizeValue">30</span>
+            </div>
+            
+            <div class="param-control">
+                <label for="overlap">Overlap:</label>
+                <input type="range" id="overlap" min="5" max="50" value="10">
+                <span id="overlapValue">10</span>
+            </div>
+            
+            <div class="param-control">
+                <label for="iterations">Iterations:</label>
+                <input type="range" id="iterations" min="1" max="5" value="3">
+                <span id="iterationsValue">3</span>
+            </div>
+            
+            <button id="transferBtn">Transfer Texture</button>
+        </div>
+        
+        <div class="result-section">
+            <h3>Result</h3>
+            <div class="result-container" id="resultPreview"></div>
+            <button id="downloadBtn">Download Result</button>
+        </div>
+    </div>
+    <div id="errorDisplay" style="display: none; color: red; padding: 10px;"></div>
+    <script src="js/texture-transfer.js"></script>
+</body>
+</html>

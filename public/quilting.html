@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Quilting</title>
+    <link rel="stylesheet" href="css/quilting.css">
+</head>
+<body>
+    <header>
+        <h1>Image Quilting</h1>
+        <button id="backBtn">Back to Dashboard</button>
+    </header>
+    
+    <div class="upload-section">
+        <form id="quiltingForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="image">Select Image:</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="width">Output Width:</label>
+                <input type="number" id="width" name="width" value="500" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="height">Output Height:</label>
+                <input type="number" id="height" name="height" value="500" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="patchSize">Patch Size:</label>
+                <input type="number" id="patchSize" name="patchSize" value="50" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="overlap">Overlap:</label>
+                <input type="number" id="overlap" name="overlap" value="10" required>
+            </div>
+
+            <button type="submit" id="startQuilting">Generate Preview</button>
+        </form>
+    </div>
+    
+    <div class="preview-section" id="previewSection">
+        <h3>Preview Output:</h3>
+        <img id="previewImage" src="" alt="Quilted Preview">
+        <div class="action-buttons">
+            <button id="saveBtn">Save to Account</button>
+            <button id="downloadBtn">Download Image</button>
+            <button id="newQuiltBtn">Create New</button>
+        </div>
+    </div>
+
+    <script src="js/quilting.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Image Processing</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Image Processing Toolkit</h1>
+        <button id="logoutBtn">Logout</button>
+    </header>
+    
+    <main>
+        <div class="features-container">
+            <section class="feature-card" id="quilting-card">
+                <div class="feature-content">
+                    <h2>Image Quilting</h2>
+                    <p>
+                        Generate high-resolution textures by stitching together small patches 
+                        from a sample image while maintaining seamless transitions.
+                    </p>
+                    <button id="tryQuiltingBtn">Try Image Quilting</button>
+                </div>
+            </section>
+
+            <section class="feature-card" id="transfer-card">
+                <div class="feature-content">
+                    <h2>Texture Transfer</h2>
+                    <p>
+                        Apply the characteristics of one texture onto another image, 
+                        preserving structure while adopting the source texture's appearance.
+                    </p>
+                    <button id="tryTextureTransferBtn">Try Texture Transfer</button>
+                </div>
+            </section>
+        </div>
+        <!-- Floating Chatbot Button -->
+        <div id="artbotButton" class="chatbot-button">
+            <img src="icons/artbot-icon.svg" alt="ArtBot" width="45">
+        </div>
+  
+  <!-- Chatbot Popup -->
+        <div id="artbotPopup" class="chatbot-popup">
+            <div class="chatbot-header">
+                <h3>ArtBot Designer Assistant</h3>
+                <button id="closeChatbot">×</button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+      <!-- Messages will appear here -->
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="userMessage" placeholder="Ask about colors, fonts, or design trends...">
+            <button id="sendMessage">Send</button>
+        </div>
+        </div>
+    </main>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
