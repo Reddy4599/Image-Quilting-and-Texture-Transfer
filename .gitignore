@@ -1,0 +1,22 @@
+# Environment variables
+.env
+
+# Dependencies
+node_modules/
+
+# Runtime data
+*.log
+npm-debug.log*
+
+# Temporary files
+/temp_outputs/
+/uploads/
+
+# Output files
+/outputs/
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+.DS_Store

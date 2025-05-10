@@ -1,227 +1,234 @@
-document.getElementById("logoutBtn").addEventListener("click", function() {
-    localStorage.removeItem("token");
-    window.location.href = "/index.html";
-});
+// DOM Elements
+const logoutBtn = document.getElementById("logoutBtn");
+const tryQuiltingBtn = document.getElementById("tryQuiltingBtn");
+const tryTextureTransferBtn = document.getElementById("tryTextureTransferBtn");
+const artbotButton = document.getElementById("artbotButton");
+const closeChatbot = document.getElementById("closeChatbot");
+const sendMessageBtn = document.getElementById("sendMessage");
+const userMessageInput = document.getElementById("userMessage");
+const chatbotMessages = document.getElementById("chatbotMessages");
 
-document.getElementById("tryQuiltingBtn").addEventListener("click", function() {
-    window.location.href = "/quilting.html";
-});
-
-document.getElementById("tryTextureTransferBtn").addEventListener("click", function() {
-    window.location.href = "/texture-transfer.html";
-});
-
-// Chatbot Toggle
-document.getElementById('artbotButton').addEventListener('click', function() {
-    const popup = document.getElementById('artbotPopup');
-    popup.style.display = popup.style.display === 'flex' ? 'none' : 'flex';
-});
-
-document.getElementById('closeChatbot').addEventListener('click', function() {
-    document.getElementById('artbotPopup').style.display = 'none';
-});
-
-// Send Message Functionality
-document.getElementById('sendMessage').addEventListener('click', sendMessage);
-document.getElementById('userMessage').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') sendMessage();
-});
+// Event Listeners
+logoutBtn?.addEventListener("click", handleLogout);
+tryQuiltingBtn?.addEventListener("click", () => navigateTo("quilting.html"));
+tryTextureTransferBtn?.addEventListener("click", () => navigateTo("texture-transfer.html"));
+artbotButton?.addEventListener("click", toggleChatbot);
+closeChatbot?.addEventListener("click", () => document.getElementById("artbotPopup").classList.add('hidden'));
+sendMessageBtn?.addEventListener("click", sendMessage);
+userMessageInput?.addEventListener("keypress", (e) => e.key === 'Enter' && sendMessage());
 
 // Configuration
 const ARTBOT_CONFIG = {
-    systemPrompt: `You're ArtBot, a creative AI assistant powered by Hugging Face, specializing in:
+    systemPrompt: `You're ArtBot, a creative AI assistant specializing in:
 - Image generation and manipulation
-- Art style analysis and recommendations
-- Design feedback and suggestions
-- Color theory and composition advice
-- Visual creativity enhancement
+- Art style analysis
+- Design feedback
+- Color theory advice
+- Visual creativity enhancement`,
 
-Provide creative, practical advice and generate images when requested.`,
-    fallbackResponse: "I apologize, but I'm having trouble processing that request. You can try:\n- Asking for image generation\n- Getting design feedback\n- Requesting art style analysis\n- Discussing color theory",
-    modelEndpoint: "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
+    fallbackResponse: "I'm having some technical difficulties. You can try:\n- Asking for image generation\n- Getting design feedback\n- Requesting art style analysis",
+
+    endpoints: {
+        text: "/api/artbot/chat",
+        image: "/api/artbot/image"
+    },
+
+    imageKeywords: [
+        'draw', 'generate image', 'create image', 'make image', 'design image',
+        'picture', 'artwork', 'illustration', 'photo', 'drawing', 'painting'
+    ]
 };
 
-// Helper function to detect if a message is requesting image generation
-function isImagePrompt(message) {
-    const imageGenerationKeywords = [
-        'draw', 'generate image', 'create image', 'make image', 'design image',
-        'create a picture', 'draw me', 'generate artwork', 'create art',
-        'create an illustration', 'generate a photo', 'make a drawing'
-    ];
-    
-    const lowerMessage = message.toLowerCase();
-    return imageGenerationKeywords.some(keyword => lowerMessage.includes(keyword));
+// Helper Functions
+function handleLogout() {
+    localStorage.removeItem("token");
+    navigateTo("index.html");
 }
 
-// Main AI response generator
+function navigateTo(url) {
+    window.location.href = url;
+}
+
+function toggleChatbot() {
+    const popup = document.getElementById('artbotPopup');
+    popup.classList.toggle('hidden');
+    if (!popup.classList.contains('hidden')) {
+        userMessageInput.focus();
+    }
+}
+
+function isImagePrompt(message) {
+    const lowerMessage = message.toLowerCase();
+    return ARTBOT_CONFIG.imageKeywords.some(keyword => lowerMessage.includes(keyword));
+}
+
+// Chatbot Functions
 async function generateBotResponse(userMessage) {
     try {
-        // Show loading state in UI
-        const loadingMessage = isImagePrompt(userMessage) ? 
-            "🎨 Generating your artwork (this may take a few seconds)..." :
-            "🤔 Thinking...";
-        
-        // Select the appropriate model endpoint based on the message type
-        const modelEndpoint = isImagePrompt(userMessage)
-            ? "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
-            : "https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill";
-        
-        const response = await fetch('/api/artbot/chat', {
+        const isImage = isImagePrompt(userMessage);
+        const loadingMessage = isImage ? 
+            "🎨 Generating your artwork..." : 
+            "🤔 Processing your request...";
+
+        showTypingIndicator(loadingMessage);
+
+        const response = await fetch('/api/artbot', {
             method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 message: userMessage,
-                modelEndpoint: modelEndpoint
+                modelEndpoint: isImage ? ARTBOT_CONFIG.endpoints.image : ARTBOT_CONFIG.endpoints.text
             })
         });
 
-        // First try to get the response as JSON
-        let data;
-        try {
-            data = await response.json();
-        } catch (jsonError) {
-            console.error('JSON parsing error:', jsonError);
-            const textResponse = await response.text();
-            throw new Error(`Invalid server response format. Please try again.`);
-        }
+        const text = await response.text(); // 👈 show raw error
+        console.log('🔍 Raw Response Text:', text);
+
+        const data = await parseResponse(response);
 
         if (!response.ok) {
-            console.error('Response not OK:', data);
-            if (response.status === 429) {
-                throw new Error("🚫 Rate limit reached. Please wait a minute before trying again.");
-            }
-            if (response.status === 503) {
-                throw new Error("🔧 Hugging Face service is temporarily unavailable. Please try again later.");
-            }
-            
-            const errorMessage = data?.error || 'Unknown server error';
-            if (errorMessage.includes("authentication")) {
-                throw new Error("🔑 Service is temporarily unavailable. Our team has been notified.");
-            }
-
-            // Log the full error for debugging
-            console.error('Hugging Face API Error:', errorMessage);
-            throw new Error("😕 I'm having trouble processing your request. Please try again in a moment.");
+            throw new Error(data?.error || 'Request failed');
         }
 
         if (!data.success) {
-            console.error('Request not successful:', data);
-            if (data.error?.includes("API key not configured")) {
-                throw new Error("⚠️ Service configuration issue. Please try again later.");
-            }
-            if (data.error?.includes("authentication")) {
-                throw new Error("🔑 Service is temporarily unavailable. Our team has been notified.");
-            }
-            throw new Error("🤔 I couldn't process that request. Please try rephrasing or try again later.");
+            throw new Error(data?.error || 'Request unsuccessful');
         }
 
-        // Handle both text responses and image generation
-        if (data.imageUrl) {
-            return `🎨 Here's your generated artwork:\n<img src="${data.imageUrl}" alt="Generated Art" class="generated-image">\n\n${data.response || ''}`;
-        }
-
-        return data.response || ARTBOT_CONFIG.fallbackResponse;
+        return formatResponse(data);
 
     } catch (error) {
-        console.error('Hugging Face Chat Error:', error);
-        // Return a user-friendly error message
-        return `❌ ${error.message || "Something unexpected happened. Please try again later."}`;
+        console.error('ArtBot Error:', error);
+        return handleError(error);
+    } finally {
+        removeTypingIndicator();
     }
 }
 
-// Format AI responses with enhanced styling
-function formatDesignResponse(text) {
-    return text
-        .replace(/### (.*?)\n/g, '<strong>$1</strong>\n')
-        .replace(/- (.*?)\n/g, '• $1\n')
-        .replace(/`(.*?)`/g, '<code>$1</code>')
-        .replace(/<img.*?>/g, (match) => `<div class="generated-art-container">${match}</div>`);
+async function parseResponse(response) {
+    try {
+        return await response.json();
+    } catch (error) {
+        const text = await response.text();
+        throw new Error(text || 'Invalid response format');
+    }
 }
 
-// Enhanced sendMessage with typing indicator
+function formatResponse(data) {
+    if (data.imageUrl) {
+        return {
+            type: 'image',
+            content: `🎨 Here's your generated artwork:<br><img src="${data.imageUrl}" alt="Generated Art" class="generated-image">`,
+            metadata: data.metadata
+        };
+    }
+    return {
+        type: 'text',
+        content: data.response || ARTBOT_CONFIG.fallbackResponse,
+        metadata: data.metadata
+    };
+}
+
+function handleError(error) {
+    const message = error.message.toLowerCase();
+    if (message.includes('rate limit')) return "🚦 Too many requests. Please wait a minute before trying again.";
+    if (message.includes('unavailable')) return "🔧 Service is temporarily unavailable. Please try again later.";
+    if (message.includes('authentication')) return "🔑 Authentication issue. Our team has been notified.";
+    return "😕 I'm having trouble processing your request. Please try again.";
+}
+
 async function sendMessage() {
-    const input = document.getElementById('userMessage');
-    const message = input.value.trim();
+    const message = userMessageInput.value.trim();
     if (!message) return;
 
+    disableInputs();
     addMessage(message, 'user');
-    input.value = '';
-    
-    // Show typing indicator
-    const typingIndicator = document.createElement('div');
-    typingIndicator.id = 'typingIndicator';
-    typingIndicator.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-    document.getElementById('chatbotMessages').appendChild(typingIndicator);
-    
+    userMessageInput.value = '';
+
     try {
         const response = await generateBotResponse(message);
-        document.getElementById('chatbotMessages').removeChild(typingIndicator);
-        addMessage(response, 'bot');
+        addMessage(response.content, 'bot', response.type);
     } catch (error) {
-        document.getElementById('chatbotMessages').removeChild(typingIndicator);
-        addMessage("⚠️ Design resources unavailable. Try again later.", 'bot');
+        addMessage(handleError(error), 'bot');
+    } finally {
+        enableInputs();
     }
 }
 
-function addMessage(text, sender) {
-    const messagesDiv = document.getElementById('chatbotMessages');
+// UI Functions
+function showTypingIndicator(message) {
+    const indicator = document.createElement('div');
+    indicator.id = 'typingIndicator';
+    indicator.className = 'message bot-message';
+    indicator.innerHTML = `
+        <div class="typing-content">
+            <div class="typing-dots">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+            <div class="typing-text">${message}</div>
+        </div>
+    `;
+    chatbotMessages.appendChild(indicator);
+    scrollToBottom();
+}
+
+function removeTypingIndicator() {
+    const indicator = document.getElementById('typingIndicator');
+    if (indicator) {
+        indicator.remove();
+    }
+}
+
+function addMessage(content, sender, type = 'text') {
     const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message', `${sender}-message`);
-    
-    // Format the response if it's from the bot
-    if (sender === 'bot') {
-        text = formatDesignResponse(text);
-    }
-    
-    messageDiv.innerHTML = text;
-    messagesDiv.appendChild(messageDiv);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    
-    // Handle any generated images
-    const images = messageDiv.getElementsByTagName('img');
-    for (const img of images) {
-        img.addEventListener('load', () => {
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        });
-    }
+    messageDiv.className = `message ${sender}-message ${type}-message`;
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    messageDiv.innerHTML = `
+        <div class="message-content">${type === 'image' ? content : formatTextResponse(content)}</div>
+        <div class="message-timestamp">${timestamp}</div>
+    `;
+
+    chatbotMessages.appendChild(messageDiv);
+    scrollToBottom();
+    setTimeout(() => messageDiv.style.opacity = '1', 100);
 }
 
-// API test function
-async function testHuggingFace() {
-    const testPrompt = "Hi, are you available?";
-    try {
-        const response = await fetch('/api/artbot/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                message: testPrompt,
-                modelEndpoint: "https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill"
-            })
-        });
-
-        const data = await response.json();
-        
-        if (!data.success) {
-            if (data.error && data.error.includes("authentication")) {
-                console.error("Hugging Face API Authentication Error: Please check your API key configuration");
-                addMessage("⚠️ I'm currently experiencing some technical difficulties. The service will be back soon!", 'bot');
-            } else {
-                throw new Error(data.error || 'Unknown error occurred');
-            }
-            return;
-        }
-
-        console.log("Hugging Face API Test Response:", data);
-        
-    } catch (error) {
-        console.error("API Test Failed:", error);
-        addMessage("👋 Hello! I'm having trouble connecting to my services right now. Please try again in a few minutes.", 'bot');
-    }
+function formatTextResponse(text) {
+    return text
+        .replace(/### (.*?)\n/g, '<h3>$1</h3>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`(.*?)`/g, '<code>$1</code>')
+        .replace(/\n/g, '<br>')
+        .replace(/(http[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
 }
 
-// Test the API connection during development
-testHuggingFace();
+function scrollToBottom() {
+    chatbotMessages.scrollTo({ top: chatbotMessages.scrollHeight, behavior: 'smooth' });
+}
+
+function disableInputs() {
+    userMessageInput.disabled = true;
+    sendMessageBtn.disabled = true;
+}
+
+function enableInputs() {
+    userMessageInput.disabled = false;
+    sendMessageBtn.disabled = false;
+    userMessageInput.focus();
+}
+
+// Initialize Chatbot
+window.addEventListener('DOMContentLoaded', () => {
+    if (chatbotMessages) {
+        addMessage(
+            "👋 Hello! I'm ArtBot, your creative assistant. I can help with:\n" +
+            "• Image generation\n• Design feedback\n• Art style analysis\n" +
+            "• Color theory\n• Composition advice\n\n" +
+            "What would you like to create today?",
+            'bot'
+        );
+    }
+});

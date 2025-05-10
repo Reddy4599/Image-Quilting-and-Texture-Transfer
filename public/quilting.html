@@ -1,58 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Quilting</title>
-    <link rel="stylesheet" href="css/quilting.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Quilting – PatchWeaveX</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <header>
-        <h1>Image Quilting</h1>
-        <button id="backBtn">Back to Dashboard</button>
-    </header>
-    
-    <div class="upload-section">
-        <form id="quiltingForm" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="image">Select Image:</label>
-                <input type="file" id="image" name="image" accept="image/*" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="width">Output Width:</label>
-                <input type="number" id="width" name="width" value="500" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="height">Output Height:</label>
-                <input type="number" id="height" name="height" value="500" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="patchSize">Patch Size:</label>
-                <input type="number" id="patchSize" name="patchSize" value="50" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="overlap">Overlap:</label>
-                <input type="number" id="overlap" name="overlap" value="10" required>
-            </div>
+<body class="bg-[#0D0D0D] text-white font-sans min-h-screen">
 
-            <button type="submit" id="startQuilting">Generate Preview</button>
-        </form>
-    </div>
-    
-    <div class="preview-section" id="previewSection">
-        <h3>Preview Output:</h3>
-        <img id="previewImage" src="" alt="Quilted Preview">
-        <div class="action-buttons">
-            <button id="saveBtn">Save to Account</button>
-            <button id="downloadBtn">Download Image</button>
-            <button id="newQuiltBtn">Create New</button>
+  <!-- Header -->
+  <header class="flex justify-between items-center px-10 py-5 border-b border-gray-800 bg-black/80 backdrop-blur-sm fixed top-0 w-full z-50">
+    <h1 class="text-2xl font-bold tracking-tight">Image Quilting</h1>
+    <a href="dashboard.html" class="text-gray-300 hover:text-green-400 transition">Back to Dashboard</a>
+  </header>
+
+  <!-- Main Section -->
+  <main class="pt-28 px-6 max-w-4xl mx-auto space-y-12">
+    <!-- Upload Section -->
+    <section class="bg-gray-900/80 border border-gray-800 rounded-xl p-6 shadow-lg">
+      <h2 class="text-xl font-bold mb-6">Upload Image and Settings</h2>
+      <form id="quiltingForm" enctype="multipart/form-data" class="space-y-4">
+        <div class="space-y-1">
+          <label for="image" class="block font-medium">Select Image:</label>
+          <input type="file" id="image" name="image" accept="image/*" required class="w-full px-3 py-2 bg-gray-800 text-white rounded border border-gray-700">
         </div>
-    </div>
 
-    <script src="js/quilting.js"></script>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="width" class="block font-medium">Output Width:</label>
+            <input type="number" id="width" name="width" value="500" required class="w-full px-3 py-2 bg-gray-800 text-white rounded border border-gray-700">
+          </div>
+
+          <div>
+            <label for="height" class="block font-medium">Output Height:</label>
+            <input type="number" id="height" name="height" value="500" required class="w-full px-3 py-2 bg-gray-800 text-white rounded border border-gray-700">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="patchSize" class="block font-medium">Patch Size:</label>
+            <input type="number" id="patchSize" name="patchSize" value="50" required class="w-full px-3 py-2 bg-gray-800 text-white rounded border border-gray-700">
+          </div>
+
+          <div>
+            <label for="overlap" class="block font-medium">Overlap:</label>
+            <input type="number" id="overlap" name="overlap" value="10" required class="w-full px-3 py-2 bg-gray-800 text-white rounded border border-gray-700">
+          </div>
+        </div>
+
+        <button type="submit" id="startQuilting" class="mt-4 bg-green-500 hover:bg-green-600 text-black px-6 py-2 rounded shadow">Generate Preview</button>
+      </form>
+    </section>
+
+    <!-- Preview Section -->
+    <section id="previewSection" class="hidden bg-gray-900/80 border border-gray-800 rounded-xl p-6 shadow-lg">
+      <h3 class="text-xl font-semibold mb-4">Preview Output:</h3>
+      <img id="previewImage" src="" alt="Quilted Preview" class="max-w-full mx-auto rounded border border-gray-700">
+      <div class="mt-6 flex gap-4 justify-center">
+        <button id="saveBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded">Save to Account</button>
+        <button id="downloadBtn" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded">Download Image</button>
+        <button id="newQuiltBtn" class="bg-gray-700 hover:bg-gray-600 text-white px-5 py-2 rounded">Create New</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/quilting.js"></script>
 </body>
 </html>

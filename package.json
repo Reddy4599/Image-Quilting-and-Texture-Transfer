@@ -9,15 +9,33 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-validator": "^7.2.1",
+    "file-type": "^20.4.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
     "multer": "^1.4.5-lts.2",
-    "node-fetch": "^2.7.0"
-  }
+    "node-fetch": "^2.7.0",
+    "opossum": "^5.0.1",
+    "sanitize-html": "^2.16.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ashwin-Vedam/SEPM_Project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ashwin-Vedam/SEPM_Project/issues"
+  },
+  "homepage": "https://github.com/Ashwin-Vedam/SEPM_Project#readme",
+  "description": ""
 }

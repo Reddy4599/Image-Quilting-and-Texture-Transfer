@@ -1,62 +1,160 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Image Processing</title>
-    <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <title>PatchWeaveX – Image Quilting & Texture Transfer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <header>
-        <h1>Image Processing Toolkit</h1>
-        <button id="logoutBtn">Logout</button>
-    </header>
-    
-    <main>
-        <div class="features-container">
-            <section class="feature-card" id="quilting-card">
-                <div class="feature-content">
-                    <h2>Image Quilting</h2>
-                    <p>
-                        Generate high-resolution textures by stitching together small patches 
-                        from a sample image while maintaining seamless transitions.
-                    </p>
-                    <button id="tryQuiltingBtn">Try Image Quilting</button>
-                </div>
-            </section>
+<body class="bg-[#0D0D0D] text-white font-sans relative">
 
-            <section class="feature-card" id="transfer-card">
-                <div class="feature-content">
-                    <h2>Texture Transfer</h2>
-                    <p>
-                        Apply the characteristics of one texture onto another image, 
-                        preserving structure while adopting the source texture's appearance.
-                    </p>
-                    <button id="tryTextureTransferBtn">Try Texture Transfer</button>
-                </div>
-            </section>
-        </div>
-        <!-- Floating Chatbot Button -->
-        <div id="artbotButton" class="chatbot-button">
-            <img src="icons/artbot-icon.svg" alt="ArtBot" width="45">
-        </div>
-  
-  <!-- Chatbot Popup -->
-        <div id="artbotPopup" class="chatbot-popup">
-            <div class="chatbot-header">
-                <h3>ArtBot Designer Assistant</h3>
-                <button id="closeChatbot">×</button>
-        </div>
-        <div class="chatbot-messages" id="chatbotMessages">
-      <!-- Messages will appear here -->
-        </div>
-        <div class="chatbot-input">
-            <input type="text" id="userMessage" placeholder="Ask about colors, fonts, or design trends...">
-            <button id="sendMessage">Send</button>
-        </div>
-        </div>
-    </main>
+  <!-- Navbar -->
+<header class="flex justify-between items-center px-10 py-5 border-b border-gray-800 bg-black/80 backdrop-blur-sm fixed top-0 w-full z-50">
+  <h1 class="text-2xl font-bold tracking-tight">PatchWeaveX</h1>
 
-    <script src="js/dashboard.js"></script>
+  <div class="relative">
+    <button id="userMenuBtn" class="flex items-center gap-2 text-gray-300 hover:text-green-400 transition focus:outline-none">
+      <span>👤 User</span>
+      <svg class="w-4 h-4 fill-current transition-transform" viewBox="0 0 20 20">
+        <path d="M5.5 7l4.5 5 4.5-5H5.5z"/>
+      </svg>
+    </button>
+
+    <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-gray-800 text-white rounded shadow-lg border border-gray-700 z-50">
+      <a href="user.html" class="block px-4 py-2 hover:bg-gray-700">👤 Profile</a>
+      <button id="logoutBtn" class="w-full text-left px-4 py-2 hover:bg-red-600">🚪 Logout</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Hero Section -->
+  <section class="pt-32 pb-24 px-8 text-center max-w-4xl mx-auto">
+    <p class="text-green-400 font-mono text-sm uppercase mb-2">Hello, designer</p>
+    <h2 class="text-5xl md:text-6xl font-extrabold leading-tight tracking-tight">
+      Unleash Creativity <br />
+      With <span class="text-green-400">Patch-Based Texturing</span>
+    </h2>
+    <p class="text-gray-400 mt-6 text-lg">Explore seamless texture generation and powerful visual transfer techniques. Built for creators, by creators.</p>
+    <div class="mt-10 flex justify-center gap-4">
+      <a href="quilting.html" class="bg-green-500 hover:bg-green-600 text-black font-semibold px-6 py-3 rounded shadow-lg">
+        Try Quilting
+      </a>
+      <a href="texture-transfer.html" class="border border-gray-700 hover:border-green-400 text-white px-6 py-3 rounded shadow">
+        Texture Transfer
+      </a>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="px-6 py-20 max-w-6xl mx-auto grid md:grid-cols-3 gap-8" id="quilting">
+    <div class="bg-gray-900/80 border border-gray-800 rounded-xl p-6 hover:border-green-400 transition group shadow-xl">
+      <div class="text-green-400 text-3xl mb-4">🧵</div>
+      <h3 class="text-xl font-bold mb-2 group-hover:text-green-400">Image Quilting</h3>
+      <p class="text-gray-400 text-sm">Stitch image patches with intelligent overlap & blend to create seamless textures from samples.</p>
+    </div>
+    <div class="bg-gray-900/80 border border-gray-800 rounded-xl p-6 hover:border-green-400 transition group shadow-xl" id="transfer">
+      <div class="text-green-400 text-3xl mb-4">🎨</div>
+      <h3 class="text-xl font-bold mb-2 group-hover:text-green-400">Texture Transfer</h3>
+      <p class="text-gray-400 text-sm">Reimagine one image using another’s texture — ideal for creative style synthesis.</p>
+    </div>
+    <div class="bg-gray-900/80 border border-gray-800 rounded-xl p-6 hover:border-green-400 transition group shadow-xl">
+      <div class="text-green-400 text-3xl mb-4">⚙️</div>
+      <h3 class="text-xl font-bold mb-2 group-hover:text-green-400">Custom Settings</h3>
+      <p class="text-gray-400 text-sm">Control patch size, overlap, iterations, and preview in real time with AI-powered feedback.</p>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="text-center py-20 px-6 bg-black border-t border-gray-800" id="contact">
+    <h3 class="text-3xl font-bold mb-4">Ready to Get Started?</h3>
+    <p class="text-gray-400 max-w-xl mx-auto mb-8">Jump into the quilting experience or transfer your own creativity to visuals like never before.</p>
+    <a href="dashboard.html" class="bg-green-500 hover:bg-green-600 text-black font-semibold px-8 py-3 rounded shadow-xl transition">
+      Go to Dashboard
+    </a>
+  </section>
+
+  <!-- ArtBot Floating Button -->
+  <div id="artbotButton" class="fixed bottom-6 right-6 z-50 cursor-pointer">
+    <button class="bg-green-500 hover:bg-green-600 text-black font-bold px-5 py-3 rounded-full shadow-xl">
+      🤖 ArtBot
+    </button>
+  </div>
+
+  <!-- ArtBot Chat Popup -->
+  <div id="artbotPopup" class="hidden fixed bottom-24 right-6 w-80 bg-[#111827] border border-gray-700 rounded-xl shadow-2xl z-50 flex flex-col overflow-hidden">
+    <div class="bg-gray-900 text-white px-4 py-3 flex justify-between items-center border-b border-gray-700">
+      <h3 class="font-semibold text-lg">ArtBot Assistant</h3>
+      <button id="closeChatbot" class="text-xl hover:text-red-400">&times;</button>
+    </div>
+    <div id="chatbotMessages" class="flex-1 p-3 overflow-y-auto max-h-60 text-sm text-gray-300 space-y-2">
+      <!-- Messages appear here -->
+    </div>
+    <div class="flex border-t border-gray-700 bg-gray-800">
+      <input type="text" id="userMessage" placeholder="Ask something creative..." class="flex-1 px-3 py-2 text-sm bg-transparent text-white outline-none">
+      <button id="sendMessage" class="bg-green-500 text-black px-4 py-2 text-sm hover:bg-green-600 transition">
+        Send
+      </button>
+    </div>
+  </div>
+
+  <!-- ArtBot Script -->
+  <script>
+    const artbotBtn = document.getElementById('artbotButton');
+    const artbotPopup = document.getElementById('artbotPopup');
+    const closeBtn = document.getElementById('closeChatbot');
+    const sendBtn = document.getElementById('sendMessage');
+    const userInput = document.getElementById('userMessage');
+    const messageBox = document.getElementById('chatbotMessages');
+
+    artbotBtn.addEventListener('click', () => {
+      artbotPopup.classList.toggle('hidden');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      artbotPopup.classList.add('hidden');
+    });
+
+    sendBtn.addEventListener('click', () => {
+        const msg = userInput.value.trim();
+        if (!msg) return;
+
+        const userMsg = `<div class="text-right"><span class="bg-green-600 text-black px-3 py-1 rounded-lg inline-block">${msg}</span></div>`;
+        const botMsg = `<div class="text-left"><span class="bg-gray-700 px-3 py-1 rounded-lg inline-block mt-1">🤖 Thinking...</span></div>`;
+
+        messageBox.innerHTML += userMsg + botMsg;
+        messageBox.scrollTop = messageBox.scrollHeight;
+        userInput.value = '';
+    });
+  </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const userBtn = document.getElementById("userMenuBtn");
+        const dropdown = document.getElementById("userDropdown");
+        const logoutBtn = document.getElementById("logoutBtn");
+
+        let isOpen = false;
+
+        userBtn.addEventListener("click", () => {
+        isOpen = !isOpen;
+        dropdown.classList.toggle("hidden", !isOpen);
+        });
+
+        // Close dropdown on outside click
+        document.addEventListener("click", (e) => {
+        if (!userBtn.contains(e.target) && !dropdown.contains(e.target)) {
+            isOpen = false;
+            dropdown.classList.add("hidden");
+        }
+        });
+
+        // Logout functionality
+        logoutBtn?.addEventListener("click", () => {
+        localStorage.removeItem("token");
+        window.location.href = "index.html";
+        });
+    });
+    </script>
+
+
 </body>
 </html>

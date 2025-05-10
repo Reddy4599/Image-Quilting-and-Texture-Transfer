@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Profile – PatchWeaveX</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0D0D0D] text-white font-sans min-h-screen">
+
+  <!-- Header -->
+  <header class="flex justify-between items-center px-10 py-5 border-b border-gray-800 bg-black/80 backdrop-blur-sm fixed top-0 w-full z-50">
+    <h1 class="text-2xl font-bold tracking-tight">PatchWeaveX</h1>
+    <a href="dashboard.html" class="text-gray-300 hover:text-green-400 transition">Back to Dashboard</a>
+  </header>
+
+  <!-- Main Section -->
+  <main class="pt-28 px-8 max-w-6xl mx-auto space-y-12">
+    <!-- User Info -->
+    <section class="bg-gray-900/80 border border-gray-800 rounded-xl p-6 shadow-lg">
+      <h2 class="text-2xl font-bold mb-4">👤 User Profile</h2>
+      <div class="grid md:grid-cols-3 gap-4 text-gray-300">
+        <div>
+          <p class="font-semibold">Username</p>
+          <p id="username">Loading...</p>
+        </div>
+        <div>
+          <p class="font-semibold">Email</p>
+          <p id="email">Not Available</p>
+        </div>
+        <div>
+          <p class="font-semibold">Subscription</p>
+          <span id="subscriptionStatus" class="inline-block px-3 py-1 rounded-full text-sm font-semibold bg-red-600 text-white">Unsubscribed</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quilted Images History -->
+    <section>
+      <h2 class="text-xl font-semibold mb-4">🧵 Quilted Images</h2>
+      <div id="quiltedGallery" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <p class="col-span-full text-gray-500">Loading...</p>
+      </div>
+    </section>
+
+    <!-- Texture Transfer History -->
+    <section>
+      <h2 class="text-xl font-semibold mb-4">🎨 Texture Transfers</h2>
+      <div id="textureGallery" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <p class="col-span-full text-gray-500">Loading...</p>
+      </div>
+    </section>
+  </main>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+        alert("Please login first.");
+        window.location.href = "index.html";
+        return;
+        }
+
+        try {
+        const response = await fetch("http://localhost:5001/api/user/profile", {
+            headers: {
+            "Authorization": "Bearer " + token
+            }
+        });
+
+        if (!response.ok) throw new Error("Unauthorized or server error");
+
+        const data = await response.json();
+        console.log("✅ Loaded profile:", data);
+
+        // Fill user profile
+        document.getElementById("username").textContent = data.username;
+        document.getElementById("subscriptionStatus").textContent = data.subscription === "premium" ? "Premium Member" : "Unsubscribed";
+        document.getElementById("subscriptionStatus").classList.remove("bg-red-600", "bg-green-500");
+        document.getElementById("subscriptionStatus").classList.add(data.subscription === "premium" ? "bg-green-500" : "bg-red-600");
+
+        // Render quilted history
+        const quiltedGallery = document.getElementById("quiltedGallery");
+        quiltedGallery.innerHTML = "";
+        data.quiltingHistory.forEach(img => {
+            const imgElem = document.createElement("img");
+            imgElem.src = img.url;
+            imgElem.alt = "Quilted Image";
+            imgElem.className = "rounded-lg border border-gray-700 hover:scale-105 transition";
+            quiltedGallery.appendChild(imgElem);
+        });
+
+        // Render texture transfer history
+        const textureGallery = document.getElementById("textureGallery");
+        textureGallery.innerHTML = "";
+        data.textureTransferHistory.forEach(img => {
+            const imgElem = document.createElement("img");
+            imgElem.src = img.url;
+            imgElem.alt = "Texture Transfer Image";
+            imgElem.className = "rounded-lg border border-gray-700 hover:scale-105 transition";
+            textureGallery.appendChild(imgElem);
+        });
+
+        } catch (err) {
+        console.error("❌ Profile load failed:", err);
+        alert("Session expired. Please login again.");
+        window.location.href = "index.html";
+        }
+    });
+    </script>
+
+
+</body>
+</html>
