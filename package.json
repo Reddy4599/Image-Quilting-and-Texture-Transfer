@@ -1,14 +1,22 @@
 {
-  "name": "sepm-project",
+  "name": "image-quilting-and-texture-transfer",
   "version": "1.0.0",
+  "description": "Full-stack image quilting and texture transfer web app using Express, MongoDB, and Python image processing.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --check server.js",
     "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "image-processing",
+    "texture-transfer",
+    "image-quilting",
+    "express",
+    "mongodb",
+    "computer-vision"
+  ],
+  "author": "Medagam V S Manjunadha Reddy",
+  "license": "MIT",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
@@ -16,7 +24,6 @@
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
     "express-validator": "^7.2.1",
-    "file-type": "^20.4.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
     "multer": "^1.4.5-lts.2",
@@ -31,11 +38,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ashwin-Vedam/SEPM_Project.git"
+    "url": "git+https://github.com/Reddy4599/Image-Quilting-and-Texture-Transfer.git"
   },
   "bugs": {
-    "url": "https://github.com/Ashwin-Vedam/SEPM_Project/issues"
+    "url": "https://github.com/Reddy4599/Image-Quilting-and-Texture-Transfer/issues"
   },
-  "homepage": "https://github.com/Ashwin-Vedam/SEPM_Project#readme",
-  "description": ""
+  "homepage": "https://github.com/Reddy4599/Image-Quilting-and-Texture-Transfer#readme"
 }

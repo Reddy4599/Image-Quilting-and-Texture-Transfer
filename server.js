@@ -13,7 +13,6 @@ const { exec } = require("child_process");
 const fs = require("fs");
 const crypto = require("crypto");
 const fetch = require("node-fetch");
-const { fileTypeFromFile } = require("file-type");
 
 const app = express();
 const PORT = process.env.PORT || 5001;
